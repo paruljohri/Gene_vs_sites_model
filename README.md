@@ -9,3 +9,8 @@ Program for Properties of Deterministic Equilibrium Populations: This program us
 >>
 >>BC_ComputerCode_3.f90\
 >>Program for Simulating Samples from a Population with Two Segregating Loci: This program simulates repeatied sampling from a population with two loci with the same allele frequency at each locus and a specified value of  D. The full set of D values for a fixed number of replicates can be stored.
+
+>>2_multiple_site_simulations:\
+>>3_calculation_of_statistics_multiple_site_simulations:\
+>>4_make_tables:\
+>>5_make_figures:\

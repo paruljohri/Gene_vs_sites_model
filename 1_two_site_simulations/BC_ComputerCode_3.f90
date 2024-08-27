@@ -2,7 +2,7 @@
 !The programs are written in GFortran for the MacIntosh 
 !(https://gnuc.org.wiki/GFortranBinariesMacOS)
 
-
+!Written by Brian Charlesworth. Contact: brian.charlesworth@ed.ac.uk for questions.
 
 !Program for Simulating Samples from a Population with Two Segregating Loci
 !This program simulates repeatied sampling from a population with two loci with the same allele frequency at each locus 

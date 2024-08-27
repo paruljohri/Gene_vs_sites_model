@@ -1,6 +1,6 @@
 # Gene_vs_sites_model
 Description of scripts:
->>1_two_site_simulations/\
+>>1_two_site_simulations:\
 >>BC_ComputerCode_1.f90\
 Program for Properties of Deterministic Equilibrium Populations: This program uses iteration to calculate the equilibrium haplotype frequencies and load statistics for the two-locus gene and sites models with no recombination, allowing for epistasis.\
 >>
@@ -13,4 +13,4 @@ Program for Properties of Deterministic Equilibrium Populations: This program us
 >>2_multiple_site_simulations:\
 >>3_calculation_of_statistics_multiple_site_simulations:\
 >>4_make_tables:\
->>5_make_figures:\
+>>5_make_figures:

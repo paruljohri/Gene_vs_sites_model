@@ -1,0 +1,206 @@
+//two-site two nucleotide model
+//A is the ancestral WT allele denoted by 0
+//C is the derived selected allele denoted by 1
+//Equal mutation rate between the two
+//3 different fitness models
+//We calcualte the 1) variance in fitness between individuals in the whole population, 2) genetic load = 1.0 - mean fitness of the population, 3) inbreeding load = mean fitness - fitness of 100 inbred individuals sampled from the population
+//Different mutation rates of Nu=1 and Nu=0.1 will be tried
+//Parameters here: -d d_mut_rate
+
+function (float)get_mean_variance_fitness(object subpop)
+	{
+	v_fitness = c();
+	for (ind in subpop.individuals){
+		hap1 = ind.genome1.nucleotides(0, L-1, format="integer");//A:0; C:1; G:2; T:3
+		hap2 = ind.genome2.nucleotides(0, L-1, format="integer");
+		site1_hap1 = hap1[0];//allele at site 1 in haplotype 1
+		site1_hap2 = hap2[0];//allele at site 1 in haplotype 2
+		site2_hap1 = hap1[1];//allele at site 2 in haplotype 1
+		site2_hap2 = hap2[1];//allele at site 2 in haplotype 2
+		if (fitness_model=="multiplicative"){v_fitness = c(v_fitness, multiplicative_fitness(site1_hap1, site1_hap2, site2_hap1, site2_hap2));}
+		else if (fitness_model=="additive_site"){v_fitness = c(v_fitness, additive_site_fitness(site1_hap1, site1_hap2, site2_hap1, site2_hap2));}
+		else if (fitness_model=="additive_gene"){v_fitness = c(v_fitness, additive_gene_fitness(site1_hap1, site1_hap2, site2_hap1, site2_hap2));}
+		}
+	return(c(mean(v_fitness),var(v_fitness)));
+	}
+
+function (float)get_inbred_fitness(object subgenomes)
+	{
+	v_fitness = c();
+	for (genome in subgenomes){
+		hap1 = genome.nucleotides(0, L-1, format="integer");//A:0; C:1; G:2; T:3
+		hap2 = hap1; //artifically making the individual be inbred
+		site1_hap1 = hap1[0];//allele at site 1 in haplotype 1
+		site1_hap2 = hap2[0];//allele at site 1 in haplotype 2
+		site2_hap1 = hap1[1];//allele at site 2 in haplotype 1
+		site2_hap2 = hap2[1];//allele at site 2 in haplotype 2
+		if (fitness_model=="multiplicative"){v_fitness = c(v_fitness, multiplicative_fitness(site1_hap1, site1_hap2, site2_hap1, site2_hap2));}
+		else if (fitness_model=="additive_site"){v_fitness = c(v_fitness, additive_site_fitness(site1_hap1, site1_hap2, site2_hap1, site2_hap2));}
+		else if (fitness_model=="additive_gene"){v_fitness = c(v_fitness, additive_gene_fitness(site1_hap1, site1_hap2, site2_hap1, site2_hap2));}
+		}
+	return(mean(v_fitness));
+	}
+
+function (float)multiplicative_fitness(integer site1_hap1, integer site1_hap2, integer site2_hap1, integer site2_hap2)
+	{
+		//for site 1:
+		if (site1_hap1==site1_hap2){
+			fitness_site1 = 1.0 + EFF[site1_hap1];}//AA,CC
+		else{
+			fitness_site1 = 1.0 + dominance*s_C;//AC or CA
+			}
+		//for site 2:
+		if (site2_hap1==site2_hap2){
+			fitness_site2 = 1.0 + EFF[site2_hap1];}//AA,CC
+		else{
+			fitness_site2 = 1.0 + dominance*s_C;//AC or CA
+			}
+		return(fitness_site1*fitness_site2);
+    }
+
+function (float)additive_gene_fitness(integer site1_hap1, integer site1_hap2, integer site2_hap1, integer site2_hap2)
+	{
+		hap1=asString(site1_hap1) + asString(site2_hap1);
+		hap2=asString(site1_hap2) + asString(site2_hap2);
+		if (hap1=="00"){
+			if (hap2=="00"){fitness=1.0;}
+			if (hap2=="01"){fitness=1.0 + (s_C*dominance);}
+			if (hap2=="10"){fitness=1.0 + (s_C*dominance);}
+			if (hap2=="11"){fitness=1.0 + (2.0*s_C*dominance);}
+			}
+		if (hap1=="10"){
+			if (hap2=="00"){fitness=1.0 + (s_C*dominance);}
+			if (hap2=="01"){fitness=1.0 + s_C;}
+			if (hap2=="10"){fitness=1.0 + s_C;}
+			if (hap2=="11"){fitness=1.0 + (1.5*s_C);}
+			}
+		if (hap1=="01"){
+			if (hap2=="00"){fitness=1.0 + (s_C*dominance);}
+			if (hap2=="01"){fitness=1.0 + s_C;}
+			if (hap2=="10"){fitness=1.0 + s_C;}
+			if (hap2=="11"){fitness=1.0 + (1.5*s_C);}
+			}
+		if (hap1=="11"){
+			if (hap2=="00"){fitness=1.0 + (2.0*s_C*dominance);}
+			if (hap2=="01"){fitness=1.0 + (1.5*s_C);}
+			if (hap2=="10"){fitness=1.0 + (1.5*s_C);}
+			if (hap2=="11"){fitness=1.0 + (2.0*s_C);}
+			}
+		return(fitness);
+    }
+
+function (float)additive_site_fitness(integer site1_hap1, integer site1_hap2, integer site2_hap1, integer site2_hap2)
+	{
+		hap1=asString(site1_hap1) + asString(site2_hap1);
+		hap2=asString(site1_hap2) + asString(site2_hap2);
+		if (hap1=="00"){
+			if (hap2=="00"){fitness=1.0;}
+			if (hap2=="10"){fitness=1.0 + (s_C*dominance);}
+			if (hap2=="01"){fitness=1.0 + (s_C*dominance);}
+			if (hap2=="11"){fitness=1.0 + (2.0*s_C*dominance);}
+			}
+		if (hap1=="01"){
+			if (hap2=="00"){fitness=1.0 + (s_C*dominance);}
+			if (hap2=="10"){fitness=1.0 + (2.0*s_C*dominance);}
+			if (hap2=="01"){fitness=1.0 + s_C;}
+			if (hap2=="11"){fitness=1.0 + s_C + (s_C*dominance);}
+			}
+		if (hap1=="10"){
+			if (hap2=="00"){fitness=1.0 + (s_C*dominance);}
+			if (hap2=="10"){fitness=1.0 + s_C;}
+			if (hap2=="01"){fitness=1.0 + (2.0*s_C*dominance);}
+			if (hap2=="11"){fitness=1.0 + s_C + (s_C*dominance);}
+			}
+		if (hap1=="11"){
+			if (hap2=="00"){fitness=1.0 + (2.0*s_C*dominance);}
+			if (hap2=="10"){fitness=1.0 + s_C + (s_C*dominance);}
+			if (hap2=="01"){fitness=1.0 + s_C + (s_C*dominance);}
+			if (hap2=="11"){fitness=1.0 + (2.0*s_C);}
+			}
+		return(fitness);
+    }
+initialize() {
+    //define pop gen parameters:
+    defineConstant("fitness_model", d_fitness_model);//"multiplicative"/"additive_site"/ "additive_gene"
+    defineConstant("N", 1000);
+    defineConstant("sample_size", 50);//50 diploid genomes
+    defineConstant("mut_rate_mean", d_mut_rate); //100*1.0e-5);
+    defineConstant("rec_rate_mean", 1.0e-5);
+    defineConstant("gamma", d_gamma);//make sure this is negative, -2 or -20
+    defineConstant("s_C", gamma/(2.0*N));//make sure this is negative
+    defineConstant("s_A", 0.0);
+    defineConstant("dominance", d_dom);//h=0.5 or 0.2
+
+    defineConstant("L", 2);
+    defineConstant("EFF", c(s_A, s_C));
+    initializeSLiMOptions(nucleotideBased=T);
+    initializeAncestralNucleotides('AA');
+    initializeMutationTypeNuc("m1", 0.5, "f", 0.0);
+    mm = matrix(c(0,mut_rate_mean/2,0,0, mut_rate_mean/2,0,0,0, 0,0,0,0, 0,0,0,0), ncol=4);
+    
+    initializeGenomicElementType("g1", m1, 1.0, mutationMatrix=mm);
+    initializeGenomicElement(g1, 0, L-1);
+    initializeRecombinationRate(rec_rate_mean);
+}
+1 early() {
+    sim.addSubpop("p1", N);
+}
+s1 fitnessEffect() {
+    hap1 = individual.genome1.nucleotides(0, L-1, format="integer");//A:0; C:1; G:2; T:3
+    hap2 = individual.genome2.nucleotides(0, L-1, format="integer");
+    site1_hap1 = hap1[0];//allele at site 1 in haplotype 1
+    site1_hap2 = hap2[0];//allele at site 1 in haplotype 2
+    site2_hap1 = hap1[1];//allele at site 2 in haplotype 1
+    site2_hap2 = hap2[1];//allele at site 2 in haplotype 2
+    if (fitness_model=="multiplicative"){
+        return(multiplicative_fitness(site1_hap1, site1_hap2, site2_hap1, site2_hap2));}
+    else if (fitness_model=="additive_gene"){
+        return(additive_gene_fitness(site1_hap1, site1_hap2, site2_hap1, site2_hap2));}
+    else if (fitness_model=="additive_site"){
+        return(additive_site_fitness(site1_hap1, site1_hap2, site2_hap1, site2_hap2));}
+}
+1 late(){
+	catn("Ancestral genome: " + sim.chromosome.ancestralNucleotides());
+	print(g1.mutationMatrix);
+}
+10000 late() { 
+    //print some general summaries:
+    catn("Current genome: " + sim.chromosome.ancestralNucleotides());
+    catn("Fixed: " + paste(sim.substitutions.nucleotide));
+    
+    //sample 5 diploid genomes and report summary stats:
+    g = p1.sampleIndividuals(5).genomes;
+    print(g.nucleotides(start=0, end=0));
+    freq_site1 = nucleotideFrequencies(g.nucleotides(start=0, end=0));
+    print("freq at site 1:");
+    print(freq_site1);
+    print(g.nucleotides(start=1, end=1));
+    freq_site2 = nucleotideFrequencies(g.nucleotides(start=1, end=1));
+    print("freq at site 2:");
+    print(freq_site2);
+    print("freq of derived allele at site 1: " + freq_site1[1]);
+    print("freq of derived allele at site 2: " + freq_site2[1]);
+	
+    //print mean fitness
+    v_popn_fitness = get_mean_variance_fitness(p1);
+    mean_fitness = v_popn_fitness[0];
+    var_fitness = v_popn_fitness[1];
+    print("variance in fitness: " + var_fitness);
+    print("genetic load: " + asFloat(1.0 - asFloat(mean_fitness)));    
+    writeFile(filePath=d_folder + "/output" + d_repID + ".txt", contents=paste0("variance in fitness: ", var_fitness), append=F);
+    writeFile(filePath=d_folder + "/output" + d_repID + ".txt", contents=paste0("genetic load: ", asFloat(1.0 - asFloat(mean_fitness))), append=T);
+
+    //subsample n genomes, make them inbred, and then calcualte their fitness
+    //This is to calculate inbreeding load.
+    g = p1.sampleIndividuals(sample_size).genomes;
+    print("inbreeding load: " + asFloat(mean_fitness - get_inbred_fitness(g)));
+    writeFile(filePath=d_folder + "/output" + d_repID + ".txt", contents=paste0("inbreeding load: ", asFloat(mean_fitness - get_inbred_fitness(g))), append=T);
+
+    //allele frequencies of the whole population:
+    freq_site1 = nucleotideFrequencies(p1.genomes.nucleotides(start=0, end=0));
+    freq_site2 = nucleotideFrequencies(p1.genomes.nucleotides(start=1, end=1));
+    writeFile(filePath=d_folder + "/output" + d_repID + ".txt", contents=paste0("allele frequency at site1: ", asFloat(freq_site1[1])), append=T);
+    writeFile(filePath=d_folder + "/output" + d_repID + ".txt", contents=paste0("allele frequency at site2: ", asFloat(freq_site2[1])), append=T);
+}
+
+

@@ -1,6 +1,6 @@
 !  The programs are written in GFortran for the MacIntosh 
 !    (https://gnuc.org.wiki/GFortranBinariesMacOS)
-!
+!    Written by Brian Charlesworth. Contact: brian.charlesworth@ed.ac.uk for questions.
 !
 !    Program for Properties of Deterministic Equilibrium Populations
 !    This program uses iteration to calculate the equilibrium haplotype frequencies and load 

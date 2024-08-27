@@ -1,5 +1,8 @@
 !The programs are written in GFortran for the MacIntosh 
 !    (https://gnuc.org.wiki/GFortranBinariesMacOS)
+!
+!   Written by Brian Charlesworth. Contact: brian.charlesworth@ed.ac.uk for questions.
+!
 !Program for Simulating Two Segregating Loci
 !   This program simulates a haploid population with two segregating sites with no   
 !   recombination, allowing weights to be applied towards low allele frequencies by the 

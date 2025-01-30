@@ -11,19 +11,30 @@ Program for Properties of Deterministic Equilibrium Populations: This program us
 >>Program for Simulating Samples from a Population with Two Segregating Loci: This program simulates repeatied sampling from a population with two loci with the same allele frequency at each locus and a specified value of  D. The full set of D values for a fixed number of replicates can be stored.
 
 >>2_multiple_site_simulations:\
--run_multiple_site_dintd_fitness_with_DFE.sh
--run_multiple_site_dintd_fitness_with_DFE_gamma100_epistasis.sh
--run_multiple_site_dintd_fitness_with_DFE_gamma100_epistasis_lowrec.sh
+-run_multiple_site_dintd_fitness_with_DFE.sh\
+-run_multiple_site_dintd_fitness_with_DFE_gamma100_epistasis.sh\
+-run_multiple_site_dintd_fitness_with_DFE_gamma100_epistasis_lowrec.sh\
 
 >>3_calculation_of_statistics_multiple_site_simulations:\
-//get LD across all SNPs and mean allele frequencies for all sites
--run_calculate_LD_af_stats.sh
--run_calculate_LD_af_stats_epistasis.sh
--run_calculate_LD_af_stats_humans.sh
-//get load stats:
--summarize_load_stats_epistasis.py
--summarize_load_stats_humans.py
--summarize_load_stats.py
+//get LD across all SNPs and mean allele frequencies for all sites\
+-run_calculate_LD_af_stats.sh\
+-run_calculate_LD_af_stats_epistasis.sh\
+-run_calculate_LD_af_stats_humans.sh\
+//get load stats:\
+-summarize_load_stats_epistasis.py\
+-summarize_load_stats_humans.py\
+-summarize_load_stats.py\
 
 >>4_make_tables:\
+>>make_table_LD_stats_multiple_sites_epistasis_v2.r\
+make_table_LD_stats_multiple_sites_v2_humans.r\
+make_table_LD_stats_multiple_sites_v2_multiplicative.r\
+make_table_LD_stats_multiple_sites_v2_N5000.r\
+make_table_LD_stats_multiple_sites_v2.r\
+>>allele frequency and load stats:\
+>>make_table_load_stats_multiple_sites_epistasis.r\
+make_table_load_stats_multiple_sites_humans.r\
+make_table_load_stats_multiple_sites_N5000.r\
+make_table_load_stats_multiple_sites.r\
+
 >>5_make_figures:

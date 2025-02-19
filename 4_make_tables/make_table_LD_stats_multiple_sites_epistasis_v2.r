@@ -4,7 +4,7 @@
 
 num_sites <- "thousand_site"
 theta <- "theta0_005"
-v_gammas <- c("gamma100_mean_lowrec") #keep this a single value
+v_gammas <- c("gamma100_mean") #keep this a single value
 v_epsilon <- c("epsilon_0_00", "epsilon_0_02", "epsilon_0_04", "epsilon_0_08", "epsilon_0_16", "epsilon_0_32")
 v_dom <- c("h_0_0", "h_0_2", "h_0_5")
 dist_min <- 1 #1 or 800 or 500

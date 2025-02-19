@@ -4,7 +4,7 @@
 
 num_sites <- "thousand_site"
 theta <- "theta0_005"
-v_gammas <- c("gamma2", "gamma20", "gamma100", "gamma2_mean", "gamma20_mean", "gamma100_mean", "gamma1000_mean")
+v_gammas <- c("gamma100_mean_N5000")
 v_dom <- c("h_0_0", "h_0_2", "h_0_5")
 dist_min <- 1 #1 or 800 or 500
 dist_max <- 100 #25 or 100 or 1000 or 600
@@ -80,7 +80,7 @@ for (s_gamma in v_gammas) {
 
 #name columns:
 colnames(v_data) <- c("gamma", "dominance", "summary", "type", "additive_gene", "additive_site")
-write.table(v_data, file = paste(s_folder, "/Tables/", num_sites, "/", theta, "/noEpistasis/summary_LD_v2_", dist_min, "_", dist_max, ".txt", sep=""), append = FALSE, quote = FALSE, sep = "\t", eol = "\n", na = "NA", dec = ".", row.names = FALSE, col.names = TRUE)
+write.table(v_data, file = paste(s_folder, "/Tables/", num_sites, "/", theta, "/noEpistasis/summary_LD_v2_N5000_", dist_min, "_", dist_max, ".txt", sep=""), append = FALSE, quote = FALSE, sep = "\t", eol = "\n", na = "NA", dec = ".", row.names = FALSE, col.names = TRUE)
 
 
 

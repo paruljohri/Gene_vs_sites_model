@@ -19,9 +19,7 @@ Program for Properties of Deterministic Equilibrium Populations
     and a specified value of  D. The full set of D values for a fixed number of replicates can be stored.\
 
 >>2_multiple_site_simulations:\
--run_multiple_site_dintd_fitness_with_DFE.sh\
--run_multiple_site_dintd_fitness_with_DFE_gamma100_epistasis.sh\
--run_multiple_site_dintd_fitness_with_DFE_gamma100_epistasis_lowrec.sh\
+SLiM scripts that were used to run the simulations are provided. Bash scripts that contain the command lines used to run the SLiM scripts are also provided.
 
 >>3_calculation_of_statistics_multiple_site_simulations:\
 //get LD across all SNPs and mean allele frequencies for all sites\

@@ -1,4 +1,7 @@
 # Gene_vs_sites_model
+
+Here are the scripts used to perform analyses in the manuscript entitled "A gene-based model of fitness and its implications for genetic variation" by Parul Johri and Brian Charlesworth. The manuscript can be accessed here - https://www.biorxiv.org/content/10.1101/2024.09.12.612686v1.abstract
+
 Description of scripts:
 >>1_two_site_simulations:\
 >>BC_ComputerCode_1.f90\

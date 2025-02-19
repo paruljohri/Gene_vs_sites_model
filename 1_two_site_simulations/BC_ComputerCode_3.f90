@@ -1,12 +1,12 @@
 
-!The programs are written in GFortran for the MacIntosh 
-!(https://gnuc.org.wiki/GFortranBinariesMacOS)
+!     The programs are written in GFortran for the MacIntosh 
+!    (https://gnuc.org.wiki/GFortranBinariesMacOS)
 
-!Written by Brian Charlesworth. Contact: brian.charlesworth@ed.ac.uk for questions.
 
-!Program for Simulating Samples from a Population with Two Segregating Loci
-!This program simulates repeatied sampling from a population with two loci with the same allele frequency at each locus 
-!and a specified value of  D. The full set of D values for a fixed number of replicates can be stored.
+
+!    Program for Simulating Samples from a Population with Two Segregating Loci
+!   This program simulates repeatied sampling from a population with two loci with the same allele frequency at each locus 
+!    and a specified value of  D. The full set of D values for a fixed number of replicates can be stored.
 	
     program Dsampa
 !   program for 2-locus D with finite sample size

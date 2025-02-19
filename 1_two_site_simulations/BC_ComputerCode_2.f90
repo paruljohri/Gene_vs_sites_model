@@ -1,9 +1,9 @@
-!The programs are written in GFortran for the MacIntosh 
+
+!     The programs are written in GFortran for the MacIntosh 
 !    (https://gnuc.org.wiki/GFortranBinariesMacOS)
-!
-!   Written by Brian Charlesworth. Contact: brian.charlesworth@ed.ac.uk for questions.
-!
-!Program for Simulating Two Segregating Loci
+
+	
+!   Program for Simulating Two Segregating Loci
 !   This program simulates a haploid population with two segregating sites with no   
 !   recombination, allowing weights to be applied towards low allele frequencies by the 
 !   methods of Garcia & Lohmueller (2021) or Good (2022)
@@ -599,4 +599,4 @@
   lcg = int(mod(s, int(huge(0), int64)), kind(0))
     end function lcg
     end subroutine init_random_seed
-    
+

@@ -28,4 +28,5 @@ Python scripts are provided that were used to calculate mean frequencies of sele
 >>4_make_tables:\
 R scripts were used to obtain the final mean and SE values of LD and load statistics across replicates. These are provided here. 
 
->>5_make_figures:
+>>5_make_figures:\
+R scripts used to make the final figures are provided.

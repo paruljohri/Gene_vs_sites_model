@@ -20,27 +20,12 @@ Program for Properties of Deterministic Equilibrium Populations
 
 >>2_multiple_site_simulations:\
 SLiM scripts that were used to run the simulations are provided. Bash scripts that contain the command lines used to run the SLiM scripts are also provided.
+Note that load statistics were calculated within SLiM and stored in output files. 
 
 >>3_calculation_of_statistics_multiple_site_simulations:\
-//get LD across all SNPs and mean allele frequencies for all sites\
--run_calculate_LD_af_stats.sh\
--run_calculate_LD_af_stats_epistasis.sh\
--run_calculate_LD_af_stats_humans.sh\
-//get load stats:\
--summarize_load_stats_epistasis.py\
--summarize_load_stats_humans.py\
--summarize_load_stats.py\
+Python scripts are provided that were used to calculate mean frequencies of selected alleles, LD between selected and minor alleles, and load statatistics.
 
 >>4_make_tables:\
->>make_table_LD_stats_multiple_sites_epistasis_v2.r\
-make_table_LD_stats_multiple_sites_v2_humans.r\
-make_table_LD_stats_multiple_sites_v2_multiplicative.r\
-make_table_LD_stats_multiple_sites_v2_N5000.r\
-make_table_LD_stats_multiple_sites_v2.r\
->>allele frequency and load stats:\
->>make_table_load_stats_multiple_sites_epistasis.r\
-make_table_load_stats_multiple_sites_humans.r\
-make_table_load_stats_multiple_sites_N5000.r\
-make_table_load_stats_multiple_sites.r\
+R scripts were used to obtain the final mean and SE values of LD and load statistics across replicates. These are provided here. 
 
 >>5_make_figures:

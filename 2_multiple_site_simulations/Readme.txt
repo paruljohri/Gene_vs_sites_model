@@ -19,6 +19,9 @@ Simulates 1000 linked selected sites with an option to calcualte fitness in 3 di
 -multiple_site_dintd_fitness_LD_DFE_epistasis_v3_N5000.slim
 Simulates 1000 linked selected sites with an option to calcualte fitness in 3 different fitness models- mutliplicative, sites, or gene model. Assumes that selection coefficients follow a DFE (modelled by a gamma distribution). Includes the effect of epistasis, as described in the paper (see Methods). Here we use 5000 diploid individuals to simulate the population instead of 1000 diploid individuals (as assumed in other scripts).
 
+-run_two_site_dintd_fitness
+Command lines provided to run the two-site simulatiosn script. Note that this script was NOT used to produce any results in the manuscript.
+
 -run_multiple_site_dintd_fitness_constant_s.sh
 Command lines used to run simulations with fixed selective effect of deleterious mutations at all sites.
 
@@ -36,4 +39,3 @@ Command lines used to run simulations that incorporated a DFE and epistasis for 
 
 -run_multiple_site_dintd_fitness_with_DFE_humans.sh
 Command lines used to run simulations of human-like parameters. There is a DFE but no epistasis.
-

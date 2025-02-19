@@ -1,0 +1,4 @@
+variance in fitness: 0.000202155
+genetic load: 0.00380941
+inbreeding load: 0.000453539
+allele frequency at site: 0.0

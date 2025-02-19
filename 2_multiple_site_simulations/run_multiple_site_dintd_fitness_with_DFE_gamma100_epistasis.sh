@@ -37,7 +37,7 @@ echo "starting simulation " $repID
 
 num_sites=1000
 theta="theta0_005"
-fitness_model="additive_site" #additive_site/additive_gene
+fitness_model="additive_gene" #additive_site/additive_gene
 folder="/work/users/p/j/pjohri/FitnessNote/simulations/thousand_site/${fitness_model}/${theta}/Epistasis"
 
 ########################

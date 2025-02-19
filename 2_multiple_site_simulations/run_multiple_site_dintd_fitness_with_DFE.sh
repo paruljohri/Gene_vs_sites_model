@@ -5,7 +5,7 @@
 #SBATCH -n 1 #number of tasks
 #SBATCH --time=0-20:00
 #SBATCH --mem=20m
-#SBATCH -a 1-1000%500
+#SBATCH -a 1-1000%1000
 #SBATCH -o /nas/longleaf/home/pjohri/LOGFILES/fitness_%A_rep%a.out
 #SBATCH -e /nas/longleaf/home/pjohri/LOGFILES/fitness_%A_rep%a.err
 
@@ -36,8 +36,8 @@ echo "starting simulation " $repID
 
 num_sites=1000
 theta="theta0_005"
-fitness_model="additive_site" #multiplicative/additive_site/additive_gene
-folder="/work/users/p/j/pjohri/FitnessNote/simulations/thousand_site/${fitness_model}/${theta}"
+fitness_model="multiplicative" #multiplicative/additive_site/additive_gene
+folder="/work/users/p/j/pjohri/FitnessNote/simulations/thousand_site/${fitness_model}/${theta}/noEpistasis"
 
 ########################
 #DFE parameters:
@@ -47,22 +47,22 @@ folder="/work/users/p/j/pjohri/FitnessNote/simulations/thousand_site/${fitness_m
 ########################
 
 ##gamma=-2; h=0.5
-#if [ ! -f "${folder}/gamma2_mean/h_0_5/output${repID}.txt" ]
-#then
-#	slim -d d_seed=${repID} -d d_num_sites=${num_sites} -d d_mut_rate=1e-5 -d d_rec_rate=1e-5 -d "d_fitness_model='${fitness_model}'" -d d_mean_gamma=-2.0 -d d_beta=0.3 -d d_dom=0.5 -d "d_folder='${folder}/gamma2_mean/h_0_5'" -d "d_repID='${repID}'" multiple_site_dintd_fitness_LD_DFE.slim
-#fi
+if [ ! -f "${folder}/gamma2_mean/h_0_5/output${repID}.txt" ]
+then
+	slim -d d_seed=${repID} -d d_num_sites=${num_sites} -d d_mut_rate=1e-5 -d d_rec_rate=1e-5 -d "d_fitness_model='${fitness_model}'" -d d_mean_gamma=-2.0 -d d_beta=0.3 -d d_dom=0.5 -d "d_folder='${folder}/gamma2_mean/h_0_5'" -d "d_repID='${repID}'" multiple_site_dintd_fitness_LD_DFE.slim
+fi
 
 ##gamma=-2; h=0.2
-#if [ ! -f "${folder}/gamma2_mean/h_0_2/output${repID}.txt" ]
-#then
-#	slim -d d_seed=${repID} -d d_num_sites=${num_sites} -d d_mut_rate=1e-5 -d d_rec_rate=1e-5 -d "d_fitness_model='${fitness_model}'" -d d_mean_gamma=-2.0 -d d_beta=0.3 -d d_dom=0.2 -d "d_folder='${folder}/gamma2_mean/h_0_2'" -d "d_repID='${repID}'" multiple_site_dintd_fitness_LD_DFE.slim
-#fi
+if [ ! -f "${folder}/gamma2_mean/h_0_2/output${repID}.txt" ]
+then
+	slim -d d_seed=${repID} -d d_num_sites=${num_sites} -d d_mut_rate=1e-5 -d d_rec_rate=1e-5 -d "d_fitness_model='${fitness_model}'" -d d_mean_gamma=-2.0 -d d_beta=0.3 -d d_dom=0.2 -d "d_folder='${folder}/gamma2_mean/h_0_2'" -d "d_repID='${repID}'" multiple_site_dintd_fitness_LD_DFE.slim
+fi
 
 ##gamma=-2; h=0.0
-#if [ ! -f "${folder}/gamma2_mean/h_0_0/output${repID}.txt" ]
-#then
-#	slim -d d_seed=${repID} -d d_num_sites=${num_sites} -d d_mut_rate=1e-5 -d d_rec_rate=1e-5 -d "d_fitness_model='${fitness_model}'" -d d_mean_gamma=-2.0 -d d_beta=0.3 -d d_dom=0.0 -d "d_folder='${folder}/gamma2_mean/h_0_0'" -d "d_repID='${repID}'" multiple_site_dintd_fitness_LD_DFE.slim
-#fi
+if [ ! -f "${folder}/gamma2_mean/h_0_0/output${repID}.txt" ]
+then
+	slim -d d_seed=${repID} -d d_num_sites=${num_sites} -d d_mut_rate=1e-5 -d d_rec_rate=1e-5 -d "d_fitness_model='${fitness_model}'" -d d_mean_gamma=-2.0 -d d_beta=0.3 -d d_dom=0.0 -d "d_folder='${folder}/gamma2_mean/h_0_0'" -d "d_repID='${repID}'" multiple_site_dintd_fitness_LD_DFE.slim
+fi
 
 ##gamma=-20; h=0.5
 #if [ ! -f "${folder}/gamma20_mean/h_0_5/output${repID}.txt" ]
@@ -101,22 +101,22 @@ folder="/work/users/p/j/pjohri/FitnessNote/simulations/thousand_site/${fitness_m
 #fi
 
 ##gamma=-1000; h=0.5
-if [ ! -f "${folder}/gamma1000_mean/h_0_5/output${repID}.txt" ]
-then
-        slim -d d_seed=${repID} -d d_num_sites=${num_sites} -d d_mut_rate=1e-5 -d d_rec_rate=1e-5 -d "d_fitness_model='${fitness_model}'" -d d_mean_gamma=-1000.0 -d d_beta=0.3 -d d_dom=0.5 -d "d_folder='${folder}/gamma1000_mean/h_0_5'" -d "d_repID='${repID}'" multiple_site_dintd_fitness_LD_DFE.slim
-fi
+#if [ ! -f "${folder}/gamma1000_mean/h_0_5/output${repID}.txt" ]
+#then
+#        slim -d d_seed=${repID} -d d_num_sites=${num_sites} -d d_mut_rate=1e-5 -d d_rec_rate=1e-5 -d "d_fitness_model='${fitness_model}'" -d d_mean_gamma=-1000.0 -d d_beta=0.3 -d d_dom=0.5 -d "d_folder='${folder}/gamma1000_mean/h_0_5'" -d "d_repID='${repID}'" multiple_site_dintd_fitness_LD_DFE.slim
+#fi
 
 ##gamma=-1000; h=0.2
-if [ ! -f "${folder}/gamma1000_mean/h_0_2/output${repID}.txt" ]
-then
-        slim -d d_seed=${repID} -d d_num_sites=${num_sites} -d d_mut_rate=1e-5 -d d_rec_rate=1e-5 -d "d_fitness_model='${fitness_model}'" -d d_mean_gamma=-1000.0 -d d_beta=0.3 -d d_dom=0.2 -d "d_folder='${folder}/gamma1000_mean/h_0_2'" -d "d_repID='${repID}'" multiple_site_dintd_fitness_LD_DFE.slim
-fi
+#if [ ! -f "${folder}/gamma1000_mean/h_0_2/output${repID}.txt" ]
+#then
+#        slim -d d_seed=${repID} -d d_num_sites=${num_sites} -d d_mut_rate=1e-5 -d d_rec_rate=1e-5 -d "d_fitness_model='${fitness_model}'" -d d_mean_gamma=-1000.0 -d d_beta=0.3 -d d_dom=0.2 -d "d_folder='${folder}/gamma1000_mean/h_0_2'" -d "d_repID='${repID}'" multiple_site_dintd_fitness_LD_DFE.slim
+#fi
 
 ##gamma=-1000; h=0.0
-if [ ! -f "${folder}/gamma1000_mean/h_0_0/output${repID}.txt" ]
-then
-        slim -d d_seed=${repID} -d d_num_sites=${num_sites} -d d_mut_rate=1e-5 -d d_rec_rate=1e-5 -d "d_fitness_model='${fitness_model}'" -d d_mean_gamma=-1000.0 -d d_beta=0.3 -d d_dom=0.0 -d "d_folder='${folder}/gamma1000_mean/h_0_0'" -d "d_repID='${repID}'" multiple_site_dintd_fitness_LD_DFE.slim
-fi
+#if [ ! -f "${folder}/gamma1000_mean/h_0_0/output${repID}.txt" ]
+#then
+#        slim -d d_seed=${repID} -d d_num_sites=${num_sites} -d d_mut_rate=1e-5 -d d_rec_rate=1e-5 -d "d_fitness_model='${fitness_model}'" -d d_mean_gamma=-1000.0 -d d_beta=0.3 -d d_dom=0.0 -d "d_folder='${folder}/gamma1000_mean/h_0_0'" -d "d_repID='${repID}'" multiple_site_dintd_fitness_LD_DFE.slim
+#fi
 
 echo "Finished simulation " $repID
 

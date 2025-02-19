@@ -1,6 +1,7 @@
-Here is hte description of each script:
+Here is the description of each script:
 
-Scripts to perform forward simulations using SLiM:
+Scripts to perform forward simulations using SLiM are provided here. Note that the output of each slim script was 2 files - 1) a .ms file of all SNPs sampled from 100 genomes, and 2) a text file that has load statistics at the end of the burn-in. Example output files are provided.
+
 -two_site_dintd_fitness_v4.slim
 This is a script to model fitness using only two sites. This script was NOT used to perform any analyses in the paper, but is useful to understand the fitness function for two sites.
 
@@ -39,3 +40,9 @@ Command lines used to run simulations that incorporated a DFE and epistasis for 
 
 -run_multiple_site_dintd_fitness_with_DFE_humans.sh
 Command lines used to run simulations of human-like parameters. There is a DFE but no epistasis.
+
+-example_output1000.ms
+Example output file in .ms format from a single replicate.
+
+-example_output1000.txt
+Example second output file from each replicate that has information about load statistics.

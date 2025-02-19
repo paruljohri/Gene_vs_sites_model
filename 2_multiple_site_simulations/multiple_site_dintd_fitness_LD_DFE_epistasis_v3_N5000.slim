@@ -3,12 +3,14 @@
 //C is the derived selected allele denoted by 1
 //Equal mutation rate between the two
 //3 different fitness models
-//We calcualte the 1) variance in fitness between individuals in the whole population, 2) genetic load = 1.0 - mean fitness of the population, 3) inbreeding load = mean fitness - fitness of 100 inbred individuals sampled from the population
+//We calcualte the 1) variance in fitness between individuals in the whole population, 2) genetic load = 1.0 - mean fitness of the population, 3) inbreeding load = mean fitness - fitness of 100 inbred individuals sampled from the population4) inbreeding load = mean fitness of 100 diploid individuals - fitness of 100 inbred individuals sampled from the population
 //Different mutation rates of Nu=1 and Nu=0.1 will be tried
-//Parameters here: -d d_mut_rate -d d_num_sites -d d_rec_rate
+//Parameters here: -d d_mut_rate -d d_rec_rate -d d_num_sites
 //output is just the allele frequency and load statistics
 //in addition, we will output all neutral and selected SNPs separately in ms files
 //And we will incorporate a DFE instead of fixed gamma
+//In this script I'm modifying the fitness functions to be more efficient.
+//Now our N is 5000
 
 function (string)write_ms_file(object sampled_genomes, string f_m1, string f_m2)
     {
@@ -51,6 +53,19 @@ function (float)get_mean_variance_fitness(object subpop)
 	return(c(mean(v_fitness),var(v_fitness)));
 	}
 
+function (float)get_mean_fitness_of_sample(object sample_of_individuals)
+        {
+        v_fitness = c();
+        for (ind in sample_of_individuals){
+                hap1 = ind.genome1.nucleotides(0, L-1, format="integer");//A:0; C:1; G:2; T:3
+                hap2 = ind.genome2.nucleotides(0, L-1, format="integer");
+                if (fitness_model=="multiplicative"){v_fitness = c(v_fitness, multiplicative_fitness(hap1, hap2));}
+                else if (fitness_model=="additive_site"){v_fitness = c(v_fitness, additive_site_fitness(hap1, hap2));}
+                else if (fitness_model=="additive_gene"){v_fitness = c(v_fitness, additive_gene_fitness(hap1, hap2));}
+                }
+        return(mean(v_fitness));
+        }
+
 function (float)get_inbred_fitness(object subgenomes)
 	{
 	v_fitness = c();
@@ -64,88 +79,156 @@ function (float)get_inbred_fitness(object subgenomes)
 	return(mean(v_fitness));
 	}
 
-function (float)multiplicative_fitness(integer hap1, integer hap2)
-	{
-		fitness_mult = 1.0;
-		posn=0;
-		while (posn<L){
-			if (hap1[asInteger(posn)]==hap2[asInteger(posn)]){
-				if (hap1[asInteger(posn)]=='0'){
-					fitness_site = 1.0;//AA
-					}
-				else{
-					fitness_site = 1.0 + s_C[posn];//CC
-					}
-				}
-			else{
-				fitness_site = 1.0 + dominance*s_C[posn];//AC or CA
-				}
-			fitness_mult = fitness_mult*fitness_site;
-			posn = posn + 1;
-		}
-		return(fitness_mult);
-    }
 
 function (float)additive_gene_fitness(integer hap1, integer hap2)
 	{
 		num_mutant_hap1 = size(strsplit(paste(hap1, sep=""), "1"))-1;
 		num_mutant_hap2 = size(strsplit(paste(hap2, sep=""), "1"))-1;
+		//get a vector with information on whether genotypes are heterozygous(1), homozygous for mutants (2) or homozygous for A/WT (0)
+		posn=0;
+		v_state = c();
+		v_sel_C = c();
+		num_mutant_indv = 0;
+		hap1_sub = c();
+		hap2_sub = c();
+		while(posn<L){
+			if(hap1[posn]==1 | hap2[posn]==1){ //has a C in at one of the two bases
+				num_mutant_indv = num_mutant_indv + 1;
+				hap1_sub = c(hap1_sub, hap1[posn]);//store it in a sub haplotype
+				hap2_sub = c(hap2_sub, hap2[posn]);//store it in a sub haplotype
+				if (hap1[posn]==1 & hap2[posn]==1){ //CC
+					v_state = c(v_state, 2);
+					v_sel_C = c(v_sel_C, s_C[posn]);
+				}
+				else{ //AC or CA
+					v_state = c(v_state, 1);
+					v_sel_C = c(v_sel_C, s_C[posn]);
+				}
+			}
+			posn = posn + 1;
+		}
 		//print(num_mutant_hap1);
+		//calcualte the direct fitness cost:
 		if (num_mutant_hap1==0 & num_mutant_hap2==0){
 			fitness_gene=1.0;
-			}
+		}
 		if (num_mutant_hap1==0 & num_mutant_hap2 > 0){
 			fitness_gene=1.0;
 			posn = 0;
-			while(posn<L){
-				if (hap2[posn] == 1){fitness_gene = fitness_gene + s_C[posn]*dominance;}//if there is a mutant in haplotype 2, account for the decrease in fitness
+			while(posn<num_mutant_indv){
+				if (hap2_sub[posn] == 1){fitness_gene = fitness_gene + v_sel_C[posn]*dominance;}//if there is a mutant in haplotype 2, account for the decrease in fitness
 				posn = posn + 1;
-				}
 			}
+		}
 		if (num_mutant_hap1 > 0 & num_mutant_hap2==0){//only haplotype 1 has a mutant
 			fitness_gene=1.0;
 			posn=0;
-			while (posn < L){
-				if (hap1[posn]==1){fitness_gene = fitness_gene + (s_C[posn]*dominance);}//only take the fitness values from positions where haplotype 1 has a mutant
+			while (posn < num_mutant_indv){
+				if (hap1_sub[posn]==1){fitness_gene = fitness_gene + (v_sel_C[posn]*dominance);}//only take the fitness values from positions where haplotype 1 has a mutant
 				posn = posn + 1;
-				}
 			}
+		}
 		if (num_mutant_hap1 > 0 & num_mutant_hap2 > 0){
 			fitness_gene = 1.0;
 			posn = 0;
-			while (posn < L){
-				if (hap1[posn]==1){fitness_gene = fitness_gene + (0.5*s_C[posn]);}
-				if (hap2[posn]==1){fitness_gene = fitness_gene + (0.5*s_C[posn]);}
+			while (posn < num_mutant_indv){
+				if (hap1_sub[posn]==1){fitness_gene = fitness_gene + (0.5*v_sel_C[posn]);}
+				if (hap2_sub[posn]==1){fitness_gene = fitness_gene + (0.5*v_sel_C[posn]);}
 				posn = posn + 1;
-				}
 			}
-		return(fitness_gene);
+		}
+		//calcualte the epistasis coefficient:
+		//calculate pairwise interactions only for sites with mutants
+		epi_coeff = 0.0;
+		if (num_mutant_hap1==0 | num_mutant_hap2==0){ //all mutations are in cis
+			posn_i = 0;
+			while (posn_i < num_mutant_indv){
+				posn_j = posn_i + 1;
+				while (posn_j < num_mutant_indv){
+					epi_coeff = epi_coeff + epsilon*dominance*(v_sel_C[posn_i] + v_sel_C[posn_j]);
+					posn_j = posn_j + 1;
+				}
+				posn_i = posn_i + 1;
+			}
+		}
+		if (num_mutant_hap1>0 & num_mutant_hap2>0){ //some mutations are in trans
+			posn_i = 0;
+			while (posn_i < num_mutant_indv){
+				posn_j = posn_i + 1;
+				while (posn_j < num_mutant_indv){
+					epi_coeff = epi_coeff + epsilon*(v_state[posn_i]/2.0)*v_sel_C[posn_i] + epsilon*(v_state[posn_j]/2.0)*v_sel_C[posn_j]; //this will weight heterozygotes by 0.5 and homozygotes by 1.0
+					posn_j = posn_j + 1;
+				}
+				posn_i = posn_i + 1;
+			}
+		}
+		fitness_gene = fitness_gene + epi_coeff;
+		if (fitness_gene >= 0.0){return(fitness_gene);}
+		else {return(0.0);}
     }
 
 function (float)additive_site_fitness(integer hap1, integer hap2)
 	{
-		fitness_add_site = 1.0;
-		posn = 0;
-		while (posn < L){
-                        if (hap1[posn]==hap2[posn]){
-				if (hap1[posn]==1){
-                                	fitness_add_site = fitness_add_site + s_C[posn];//CC
-					}
-                                }
-                        else{
-                                fitness_add_site = fitness_add_site + dominance*s_C[posn];//AC or CA
-                                }
+		//get a vector with information on whether genotypes are heterozygous(1), homozygous for mutants (2) or homozygous for A/WT (0)
+		posn=0;
+		num_mutations=0;
+		v_state = c();
+		v_sel_C = c();
+		hap1_sub = c();
+		hap2_sub = c();
+		while(posn<L){
+			if(hap1[posn]==1 | hap2[posn]==1){ //a mutant is present
+				num_mutations = num_mutations + 1;
+				hap1_sub = c(hap1_sub, hap1[posn]);
+				hap2_sub = c(hap2_sub, hap2[posn]);
+				if (hap1[posn]==1 & hap2[posn]==1){ //CC
+					v_state = c(v_state, 2);
+					v_sel_C = c(v_sel_C, s_C[posn]);
+				}
+				else{ //AC or CA
+					v_state = c(v_state, 1);
+					v_sel_C = c(v_sel_C, s_C[posn]);
+				}
+			}
 			posn = posn + 1;
 		}
-                return(fitness_add_site);
-    }
+		//calculate direct fitness cost:
+		fitness_add_site = 1.0;
+		posn = 0;
+		while (posn < num_mutations){
+			if (hap1_sub[posn]==1 & hap2_sub[posn]==1){
+				fitness_add_site = fitness_add_site + v_sel_C[posn];//CC
+			}
+			else{
+				fitness_add_site = fitness_add_site + dominance*v_sel_C[posn];//AC or CA
+			}
+			posn = posn + 1;
+		}
+		//calculate the pairwise epistatic coefficient:
+		epi_coeff = 0.0;
+		if (num_mutations > 0){ //there is at least one mutation
+			posn_i = 0;
+			while (posn_i < num_mutations){
+				posn_j = posn_i + 1;
+				while (posn_j < num_mutations){
+					epi_coeff = epi_coeff + epsilon*(v_state[posn_i]/2.0)*v_sel_C[posn_i] + epsilon*(v_state[posn_j]/2.0)*v_sel_C[posn_j]; //this will weight heterozygotes by 0.5 and homozygotes by 1.0
+					posn_j = posn_j + 1;
+				}
+				posn_i = posn_i + 1;
+			}
+		}
+		fitness_add_site = fitness_add_site + epi_coeff;
+		if (fitness_add_site >= 0.0){return(fitness_add_site);}
+		else {return(0.0);}
+}
 initialize() {
     //define pop gen parameters:
     defineConstant("fitness_model", d_fitness_model);//"multiplicative"/"additive_site"/ "additive_gene"
-    defineConstant("N", 1000);
+    defineConstant("N", 5000);
     defineConstant("sample_size", 50);//50 diploid genomes
     defineConstant("mut_rate_mean", d_mut_rate); //100*1.0e-5);
-    defineConstant("rec_rate_mean", d_rec_rate); //1.0e-5);
+    defineConstant("rec_rate_mean", d_rec_rate);//fold*1.0e-5
+    //defineConstant("rec_rate_mean", d_fold_rec_rate*1.0e-5);
 
     defineConstant("L", asInteger(d_num_sites));
     defineConstant("mean_gamma", d_mean_gamma);//make sure this is negative, -2 or -20
@@ -153,7 +236,8 @@ initialize() {
     print(s_C);
     defineConstant("s_A", 0.0);
     defineConstant("dominance", d_dom);//h=0.5 or 0.2
-
+    defineConstant("epsilon", d_epsilon);
+    
     initializeSLiMOptions(nucleotideBased=T);
     initializeAncestralNucleotides(randomNucleotides(L, basis = c(1,0,0,0), format = "string"));
     initializeMutationTypeNuc("m1", 0.5, "f", 0.0);//the dominance here doesn't matter because we define fitness in our custom functions
@@ -181,7 +265,7 @@ s1 fitnessEffect() {
 	catn("Ancestral genome: " + sim.chromosome.ancestralNucleotides());
 	print(g1.mutationMatrix);
 }
-10000 late() { 
+50000 late() { 
     //print some general summaries:
     catn("Current genome: " + sim.chromosome.ancestralNucleotides());
     catn("Fixed: " + paste(sim.substitutions.nucleotide));
@@ -192,19 +276,6 @@ s1 fitnessEffect() {
     hap2 = indv.genome2.nucleotides(0, L-1, format="integer");
     print(hap1);
     print(hap2);
-
-    //sample 5 diploid genomes and report summary stats:
-    g = p1.sampleIndividuals(5).genomes;
-    print(g.nucleotides(start=0, end=0));
-    freq_site1 = nucleotideFrequencies(g.nucleotides(start=0, end=0));
-    print("freq at site 1:");
-    print(freq_site1);
-    print(g.nucleotides(start=1, end=1));
-    freq_site2 = nucleotideFrequencies(g.nucleotides(start=1, end=1));
-    print("freq at site 2:");
-    print(freq_site2);
-    print("freq of derived allele at site 1: " + freq_site1[1]);
-    print("freq of derived allele at site 2: " + freq_site2[1]);
 	
     //print mean fitness
     v_popn_fitness = get_mean_variance_fitness(p1);
@@ -220,6 +291,10 @@ s1 fitnessEffect() {
     g = p1.sampleIndividuals(sample_size).genomes;
     print("inbreeding load: " + asFloat(mean_fitness - get_inbred_fitness(g)));
     writeFile(filePath=d_folder + "/output" + d_repID + ".txt", contents=paste0("inbreeding load: ", asFloat(mean_fitness - get_inbred_fitness(g))), append=T);
+    
+    //inbreeding load using a sample to calcualte the mean fitness:
+    g_outbred = p1.sampleIndividuals(2*sample_size);
+    writeFile(filePath=d_folder + "/output" + d_repID + ".txt", contents=paste0("inbreeding load sample: ", asFloat(get_mean_fitness_of_sample(g_outbred) - get_inbred_fitness(g))), append=T);
 
     //allele frequencies of the whole population at a random site in the center:
     freq_site_center = nucleotideFrequencies(p1.genomes.nucleotides(start=asInteger(L/2), end=asInteger(L/2))); //this function can only be used to give allele frequencies at a single site

@@ -9,6 +9,7 @@
 //output is just the allele frequency and load statistics
 //in addition, we will output all neutral and selected SNPs separately in ms files
 //And we will incorporate a DFE instead of fixed gamma
+//We want to try this with a larger N of 5000 diploid individuals
 
 function (string)write_ms_file(object sampled_genomes, string f_m1, string f_m2)
     {
@@ -142,10 +143,10 @@ function (float)additive_site_fitness(integer hap1, integer hap2)
 initialize() {
     //define pop gen parameters:
     defineConstant("fitness_model", d_fitness_model);//"multiplicative"/"additive_site"/ "additive_gene"
-    defineConstant("N", 1000);
+    defineConstant("N", 5000);
     defineConstant("sample_size", 50);//50 diploid genomes
-    defineConstant("mut_rate_mean", d_mut_rate); //100*1.0e-5);
-    defineConstant("rec_rate_mean", d_rec_rate); //1.0e-5);
+    defineConstant("mut_rate_mean", d_mut_rate);
+    defineConstant("rec_rate_mean", d_rec_rate);
 
     defineConstant("L", asInteger(d_num_sites));
     defineConstant("mean_gamma", d_mean_gamma);//make sure this is negative, -2 or -20
@@ -181,7 +182,7 @@ s1 fitnessEffect() {
 	catn("Ancestral genome: " + sim.chromosome.ancestralNucleotides());
 	print(g1.mutationMatrix);
 }
-10000 late() { 
+50000 late() { 
     //print some general summaries:
     catn("Current genome: " + sim.chromosome.ancestralNucleotides());
     catn("Fixed: " + paste(sim.substitutions.nucleotide));
@@ -192,19 +193,6 @@ s1 fitnessEffect() {
     hap2 = indv.genome2.nucleotides(0, L-1, format="integer");
     print(hap1);
     print(hap2);
-
-    //sample 5 diploid genomes and report summary stats:
-    g = p1.sampleIndividuals(5).genomes;
-    print(g.nucleotides(start=0, end=0));
-    freq_site1 = nucleotideFrequencies(g.nucleotides(start=0, end=0));
-    print("freq at site 1:");
-    print(freq_site1);
-    print(g.nucleotides(start=1, end=1));
-    freq_site2 = nucleotideFrequencies(g.nucleotides(start=1, end=1));
-    print("freq at site 2:");
-    print(freq_site2);
-    print("freq of derived allele at site 1: " + freq_site1[1]);
-    print("freq of derived allele at site 2: " + freq_site2[1]);
 	
     //print mean fitness
     v_popn_fitness = get_mean_variance_fitness(p1);

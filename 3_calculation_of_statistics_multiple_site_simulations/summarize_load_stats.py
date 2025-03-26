@@ -8,7 +8,7 @@ output_folder="/work/users/p/j/pjohri/FitnessNote/statistics/" + num_sites
 fitness_model="additive_gene" #multiplicative/additive_site/additive_gene
 theta="theta0_005"
 epistatic="noEpistasis"
-l_gamma=["gamma100_mean_N5000"] #gamma2/gamma20/gamma2_mean/gamma20_mean/gamma100_mean/gamma1000_mean
+l_gamma=["gamma2", "gamma20", "gamma100", "gamma2_mean", "gamma20_mean", "gamma100_mean", "gamma1000_mean", "gamma100_mean_N5000"] #gamma2/gamma20/gamma2_mean/gamma20_mean/gamma100_mean/gamma1000_mean
 l_dom=["h_0_0", "h_0_2", "h_0_5"] #h_0_0/h_0_2/h_0_5
 
 for gamma in l_gamma:

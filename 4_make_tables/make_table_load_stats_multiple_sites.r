@@ -3,7 +3,7 @@
 s_folder <- "/work/users/p/j/pjohri/FitnessNote"
 num_sites <- "thousand_site"
 theta <- "theta0_005"
-v_gammas <- c("gamma2", "gamma20", "gamma2_mean", "gamma20_mean", "gamma100_mean", "gamma1000_mean")
+v_gammas <- c("gamma2", "gamma20", "gamma100", "gamma2_mean", "gamma20_mean", "gamma100_mean", "gamma1000_mean")
 v_dom <- c("h_0_0", "h_0_2", "h_0_5")
 v_data <- c()
 for (s_gamma in v_gammas) {

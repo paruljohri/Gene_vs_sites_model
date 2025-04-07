@@ -1,4 +1,4 @@
-#This is to get the mean allele frequency from a .ms file:
+#This is to get the mean allele frequency and the number of segregating sites from a .ms file:
 #Note that this will include all sites, not just SNPs
 #How to run:
 ##python get_af_from_ms_general_reps.py -input_folder -output_folder -extension .ms -output_prefix -num_indv 100 -num_sites 1000
@@ -47,7 +47,7 @@ def get_af_from_ms(f_MS):
 
 #Open output file
 result = open(out_folder + "/" + prefix + ".af", 'w+')
-result.write("filename" + '\t' + "mean_allele_freq" + '\n')
+result.write("filename" + '\t' + "mean_allele_freq" + '\t' + "S" + '\n')
 
 #Make a list of all .ms files:
 os.system("ls " + in_folder + "/*" + s_ext + " > " + out_folder + "/" + prefix + ".list")
@@ -63,13 +63,17 @@ for Aline in f_list:
     d_af = get_af_from_ms(f_ms)
     f_ms.close()
     
-    #get mean allele frequency:
+    #get mean allele frequency and number of polymorphic sites:
     sum_af = 0.0
+    s_seg_sites = 0
     for posn in d_af.keys():
-        sum_af = sum_af + float(d_af[posn])/float(num_indv)
-
+        s_q = float(d_af[posn])/float(num_indv)
+        sum_af = sum_af + s_q
+        if s_q > 0.0 and s_q < 1.0:
+            s_seg_sites += 1
+    
     #Write the full result:
-    result.write(f_name + '\t' + str(sum_af/float(num_sites)) + '\n')
+    result.write(f_name + '\t' + str(sum_af/float(num_sites)) + '\t' + str(s_seg_sites) + '\n')
 
 f_list.close()
 result.close()

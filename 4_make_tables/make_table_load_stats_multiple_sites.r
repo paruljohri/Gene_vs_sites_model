@@ -28,6 +28,9 @@ for (s_gamma in v_gammas) {
 			#mean allele frequency across all sites for a sample of 100 genomes:
 			v_data <- rbind(v_data, c(s_gamma, s_dom, "allele_frequency_from_sample", "mean", mean(t_af_gene$mean_allele_freq), mean(t_af_site$mean_allele_freq)))
 			v_data <- rbind(v_data, c(s_gamma, s_dom, "allele_frequency_from_sample", "SE", sd(t_af_gene$mean_allele_freq)/sqrt(length(t_af_gene$mean_allele_freq)), sd(t_af_site$mean_allele_freq)/sqrt(length(t_af_site$mean_allele_freq))))
+			#number of segregating sites in a sample of 100 genomes:
+			v_data <- rbind(v_data, c(s_gamma, s_dom, "num_seg_sites_from_sample", "mean", mean(t_af_gene$S), mean(t_af_site$S)))
+			v_data <- rbind(v_data, c(s_gamma, s_dom, "num_seg_sites_from_sample", "SE", sd(t_af_gene$S)/sqrt(length(t_af_gene$S)), sd(t_af_site$S)/sqrt(length(t_af_site$S))))
 		}
 }
 

@@ -2,6 +2,10 @@
 !     The programs are written in GFortran for the MacIntosh 
 !    (https://gnuc.org.wiki/GFortranBinariesMacOS)
 
+!    Program for Properties of Multiplicative Fitness Model
+!    This program uses iteration to calculate the equilibrium haplotype frequencies and load 
+!    statistics for the two-locus gene and sites multiplicative models with no recombination, allowing for 
+!     epistasis.
     
     program dom5
 !   recursions for 2-locus mutation model with multiplicative fitnesse
